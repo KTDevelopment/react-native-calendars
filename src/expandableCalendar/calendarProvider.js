@@ -26,6 +26,8 @@ class CalendarProvider extends Component {
   static propTypes = {
     /** Initial date in 'yyyy-MM-dd' format. Default = Date() */
     date: PropTypes.any.isRequired,
+    /** Callback for todayButton Pressed */
+    onTodayPress: PropTypes.func,
     /** Callback for date change event */
     onDateChanged: PropTypes.func,
     /** Callback for month change event */
@@ -59,7 +61,7 @@ class CalendarProvider extends Component {
       this.setDate(this.props.date, UPDATE_SOURCES.PROP_UPDATE);
     }
   }
-  
+
   getProviderContextValue = () => {
     return {
       setDate: this.setDate,
@@ -77,7 +79,7 @@ class CalendarProvider extends Component {
     });
 
     _.invoke(this.props, 'onDateChanged', date, updateSource);
-    
+
     if (!sameMonth) {
       _.invoke(this.props, 'onMonthChange', xdateToData(XDate(date)), updateSource);
     }
@@ -122,7 +124,7 @@ class CalendarProvider extends Component {
     if (this.props.showTodayButton) {
       const today = XDate().toString('yyyy-MM-dd');
       const isToday = today === date;
-      
+
       Animated.spring(this.state.buttonY, {
         toValue: isToday ? TOP_POSITION : -this.props.todayBottomMargin || -TOP_POSITION,
         tension: 30,
@@ -136,7 +138,7 @@ class CalendarProvider extends Component {
     const {disabledOpacity} = this.props;
     if (disabledOpacity) {
       Animated.timing(this.state.opacity, {
-        toValue: disabled ? disabledOpacity : 1, 
+        toValue: disabled ? disabledOpacity : 1,
         duration: 500
       }).start();
     }
@@ -145,23 +147,23 @@ class CalendarProvider extends Component {
   onTodayPress = () => {
     const today = XDate().toString('yyyy-MM-dd');
     this.setDate(today, UPDATE_SOURCES.TODAY_PRESS);
-  }
+  };
 
   renderTodayButton() {
     const {disabled, opacity, buttonY, buttonIcon} = this.state;
     const todayString = XDate.locales[XDate.defaultLocale].today || commons.todayString;
     const today = todayString.charAt(0).toUpperCase() + todayString.slice(1);
-    
+
     return (
       <Animated.View style={[this.style.todayButtonContainer, {transform: [{translateY: buttonY}]}]}>
-        <TouchableOpacity style={[this.style.todayButton, this.props.todayButtonStyle]} onPress={this.onTodayPress} disabled={disabled}>
+        <TouchableOpacity style={[this.style.todayButton, this.props.todayButtonStyle]} onPress={this.props.onTodayPress || this.onTodayPress} disabled={disabled}>
           <Animated.Image style={[this.style.todayButtonImage, {opacity}]} source={buttonIcon}/>
           <Animated.Text allowFontScaling={false} style={[this.style.todayButtonText, {opacity}]}>{today}</Animated.Text>
         </TouchableOpacity>
       </Animated.View>
     );
   }
-  
+
   render() {
     return (
       <CalendarContext.Provider value={this.getProviderContextValue()}>

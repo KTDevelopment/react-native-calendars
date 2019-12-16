@@ -436,6 +436,7 @@ class ExpandableCalendar extends Component {
           current={this.props.context.date}
           onDayPress={this.onDayPress}
           markedDates={this.getMarkedDates()}
+          markingType={this.props.markingType || 'simple'}
           style={this.props.calendarStyle}
         />
       </Animated.View>
@@ -464,7 +465,7 @@ class ExpandableCalendar extends Component {
   };
 
   render() {
-    const {style, hideKnob, horizontal, allowShadow, theme} = this.props;
+    const {style, hideKnob, horizontal, allowShadow, theme, markingType} = this.props;
     const {deltaY, position} = this.state;
     const isOpen = position === POSITIONS.OPEN;
     const themeObject = Object.assign(this.headerStyleOverride, theme);
@@ -487,6 +488,7 @@ class ExpandableCalendar extends Component {
             pagingEnabled
             scrollEnabled={isOpen}
             markedDates={this.getMarkedDates()}
+            markingType={markingType || 'simple'}
             hideArrows={this.shouldHideArrows()}
             onPressArrowLeft={this.onPressArrowLeft}
             onPressArrowRight={this.onPressArrowRight}

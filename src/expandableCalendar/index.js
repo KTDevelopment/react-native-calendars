@@ -56,7 +56,9 @@ class ExpandableCalendar extends Component {
     /** source for the right arrow image */
     rightArrowImageSource: PropTypes.oneOfType([PropTypes.object, PropTypes.number, PropTypes.func]),
     /** whether to have shadow/elevation for the calendar */
-    allowShadow: PropTypes.bool
+    allowShadow: PropTypes.bool,
+    /** called when knob is pressed */
+    onPressKnob: PropTypes.func
   };
 
   static defaultProps = {
@@ -328,7 +330,9 @@ class ExpandableCalendar extends Component {
 
   onPressKnob() {
     const {position} = this.state;
-
+    if (this.props.onPressKnob) {
+      this.props.onPressKnob();
+    }
     if (position === POSITIONS.OPEN) {
       this.bounceToPosition(this.closedHeight);
     } else {
